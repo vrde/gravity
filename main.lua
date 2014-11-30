@@ -3,13 +3,14 @@ function love.load()
     TRAIL_LENGTH = 100
     TRAIL_SAMPLING = 0.1
     trailTimer = 0
+    scale = 1
 
     bodies = { }
     addbody(400, 300, 3000, 0, 0)
 end
 
 function radius(area)
-    r = math.sqrt(area / math.pi) / 10
+    r = math.sqrt(math.sqrt(area / math.pi))
     if r < 1 then
         r = 2
     end
@@ -112,6 +113,12 @@ function love.update(dt)
     if love.keyboard.isDown("l") then
         currentBody.lock = true
     end
+    if love.keyboard.isDown("1") then
+        scale = scale + 0.05
+    end
+    if love.keyboard.isDown("2") then
+        scale = scale - 0.05
+    end
 
 
     for i, a in pairs(bodies) do
@@ -172,6 +179,7 @@ end
 
 function love.draw()
     local r, s
+    love.graphics.scale(1 / scale, 1 / scale)
     for i, a in pairs(bodies) do
         if a.selected then
             love.graphics.setColor(255, 128, 128)
@@ -191,14 +199,14 @@ end
 function love.mousepressed(x, y, button)
     local newBody
     if love.mouse.isDown("l") then
-        newBody = getbody(love.mouse.getX(), love.mouse.getY())
+        newBody = getbody(love.mouse.getX() * scale, love.mouse.getY() * scale)
         if newBody then
             currentBody = newBody
             resetSelected()
             currentBody.selected = true
         end
     elseif love.mouse.isDown("r") then
-        currentBody = addbody(love.mouse.getX(), love.mouse.getY(), 3000, 0, 0)
+        currentBody = addbody(love.mouse.getX() * scale, love.mouse.getY() * scale, 3000, 0, 0)
         resetSelected()
         currentBody.selected = true
     end
